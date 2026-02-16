@@ -87,23 +87,33 @@ export const App: React.FC = () => {
   };
 
   const onDeleteAll = () => {
-    const todoComplete = todos.filter(todo => todo.completed);
-    const todoCompleteId = todoComplete.map(todo => todo.id);
+    const completedTodos = todos.filter(todo => todo.completed);
+    const completedIds = completedTodos.map(todo => todo.id);
 
-    setLoadingIds(prev => [...prev, ...todoCompleteId]);
+    setLoadingIds(prev => [...prev, ...completedIds]);
 
-    todoComplete.map(todo => {
+    const deletePromises = completedTodos.map(todo => {
       return deleteTodo(todo.id)
-        .then(() => {
-          setTodos(currentTodos => currentTodos.filter(t => t.id !== todo.id));
-        })
+        .then(() => todo.id)
         .catch(() => {
           setErrorMessage('Unable to delete a todo');
-        })
-        .finally(() => {
-          setLoadingIds(prev => prev.filter(id => id !== todo.id));
+
+          return null;
         });
     });
+
+    Promise.all(deletePromises)
+      .then(results => {
+        const deletedIds = results.filter((id): id is number => id !== null);
+
+        setTodos(currentTodos =>
+          currentTodos.filter(todo => !deletedIds.includes(todo.id)),
+        );
+      })
+      .finally(() => {
+        setLoadingIds(prev => prev.filter(id => !completedIds.includes(id)));
+        todoInputRef.current?.focus();
+      });
   };
 
   const todoStatus = (todo: Todo) => {
