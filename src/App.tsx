@@ -6,6 +6,7 @@ import { FooterTodo } from './components/FooterTodo';
 import { Errors } from './components/Errors';
 import { HeaderTodo } from './components/HeaderTodo';
 import { useTodoService } from './hooks/useTodoService';
+import { SortOrder } from './types/SortOrder';
 
 export const App: React.FC = () => {
   const {
@@ -29,18 +30,17 @@ export const App: React.FC = () => {
     renameTodo,
   } = useTodoService();
 
-  const [sorted, setSorted] = useState('all');
+  const [sorted, setSorted] = useState(SortOrder.ALL);
 
   const sortedTodoes = todos.filter(todo => {
-    if (sorted === 'active') {
-      return !todo.completed;
+    switch (sorted) {
+      case SortOrder.ACTIVE:
+        return !todo.completed;
+      case SortOrder.COMPLETED:
+        return todo.completed;
+      default:
+        return true;
     }
-
-    if (sorted === 'completed') {
-      return todo.completed;
-    }
-
-    return true;
   });
 
   if (!USER_ID) {

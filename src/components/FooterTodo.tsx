@@ -1,10 +1,11 @@
 import classNames from 'classnames';
 import { Todo } from '../types/Todo';
+import { SortOrder } from '../types/SortOrder';
 
 interface Props {
   activeTodos: number;
   sorted: string;
-  setSorted: (value: string) => void;
+  setSorted: (value: SortOrder) => void;
   todos: Todo[];
   onDeleteAll: () => void;
 }
@@ -25,10 +26,10 @@ export const FooterTodo: React.FC<Props> = ({
         <a
           href="#/"
           className={classNames('filter__link', {
-            selected: sorted === 'all',
+            selected: sorted === SortOrder.ALL,
           })}
           data-cy="FilterLinkAll"
-          onClick={() => setSorted('all')}
+          onClick={() => setSorted(SortOrder.ALL)}
         >
           All
         </a>
@@ -36,10 +37,10 @@ export const FooterTodo: React.FC<Props> = ({
         <a
           href="#/active"
           className={classNames('filter__link', {
-            selected: sorted === 'active',
+            selected: sorted === SortOrder.ACTIVE,
           })}
           data-cy="FilterLinkActive"
-          onClick={() => setSorted('active')}
+          onClick={() => setSorted(SortOrder.ACTIVE)}
         >
           Active
         </a>
@@ -47,10 +48,10 @@ export const FooterTodo: React.FC<Props> = ({
         <a
           href="#/completed"
           className={classNames('filter__link', {
-            selected: sorted === 'completed',
+            selected: sorted === SortOrder.COMPLETED,
           })}
           data-cy="FilterLinkCompleted"
-          onClick={() => setSorted('completed')}
+          onClick={() => setSorted(SortOrder.COMPLETED)}
         >
           Completed
         </a>
